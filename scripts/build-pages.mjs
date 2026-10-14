@@ -1,0 +1,10 @@
+import {mkdir,cp,readFile,writeFile,rm} from 'node:fs/promises';
+import {resolve} from 'node:path';
+const out=resolve('.render/pages/teaser');
+await rm(out,{recursive:true,force:true});await mkdir(out,{recursive:true});
+for(const path of ['index.html','render.html','src','exports'])await cp(path,resolve(out,path),{recursive:true});
+const dir=resolve(out,'vendor/three');
+await mkdir(resolve(dir,'build'),{recursive:true});await mkdir(resolve(dir,'examples/jsm/environments'),{recursive:true});
+for(const file of ['build/three.module.js','build/three.core.js','examples/jsm/environments/RoomEnvironment.js','LICENSE'])await cp(resolve('node_modules/three',file),resolve(dir,file));
+const render=await readFile(resolve(out,'render.html'),'utf8');await writeFile(resolve(out,'render.html'),render.replaceAll('./node_modules/three/','./vendor/three/'));
+console.log('Static Pages bundle:',out);
