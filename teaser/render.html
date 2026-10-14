@@ -1,0 +1,13 @@
+<!doctype html><html><head><meta charset="utf-8"><title>GEN NX · render</title>
+<script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
+<style>*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080507}#stage{position:relative;width:100vw;height:100vh;background:radial-gradient(ellipse at 70% 28%,var(--glow),transparent 63%),radial-gradient(ellipse at 50% 100%,var(--low),transparent 60%),var(--bg)}canvas{width:100%;height:100%;display:block}#date{position:absolute;top:81%;left:0;width:100%;text-align:center;color:var(--text);font-family:Arial,sans-serif;font-size:clamp(12px, 1.72vw, 33px);font-weight:400;letter-spacing:.7vw;padding-left:.7vw;opacity:0}#grain{position:absolute;inset:0;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23ffffff' filter='url(%23n)' opacity='.55' d='M0 0h180v180H0z'/%3E%3C/svg%3E")}</style></head>
+<body><div id="stage"><canvas id="canvas"></canvas><div id="grain"></div><div id="date">11.2026</div></div>
+<script type="module">
+import {createTeaser} from './src/scene.js';
+const q=new URLSearchParams(location.search),theme=q.get('theme')==='blue'?'blue':'red';
+const stage=document.querySelector('#stage');stage.style.setProperty('--bg',theme==='blue'?'#03070d':'#080507');stage.style.setProperty('--glow',theme==='blue'?'rgba(17,61,91,.48)':'rgba(119,22,36,.45)');stage.style.setProperty('--low',theme==='blue'?'rgba(8,28,48,.23)':'rgba(65,8,19,.22)');stage.style.setProperty('--text',theme==='blue'?'#adbdcc':'#cbb5b7');
+const teaser=createTeaser(document.querySelector('canvas'),{theme,width:innerWidth,height:innerHeight});
+window.renderFrame=t=>{const state=teaser.setTime(t);document.querySelector('#date').style.opacity=state.dateOpacity;};
+window.renderFrame(Number(q.get('t')||0));window.ready=true;
+if(q.get('play')==='1'){const start=performance.now();function tick(now){window.renderFrame(((now-start)/1000)%8);requestAnimationFrame(tick);}requestAnimationFrame(tick);}
+</script></body></html>
